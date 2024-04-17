@@ -52,5 +52,6 @@ jobs:
         git config --local user.name "2061360308"
         git add index.json info/*
         git commit -m "Update index.json"
+        git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/2061360308/PalWorldModWarehouse.git
         # git push https://${{ secrets.GH_TOKEN }}@github.com/2061360308/PalWorldModWarehouse.git
         git push origin main
