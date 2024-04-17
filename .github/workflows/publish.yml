@@ -14,6 +14,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        # personal access token
+        token: ${{ secrets.GH_TOKEN }}
 
     - name: Install unzip and jq
       run: sudo apt-get install unzip jq -y
@@ -44,11 +47,9 @@ jobs:
         echo "{\"time\": $timestamp, \"data\": $index_data}" | jq . > index.json
 
     - name: Commit and push changes
-      env:
-         ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.email "2061360308@qq.com"
+        git config --local user.name "2061360308"
         git add index.json info/*
         git commit -m "Update index.json"
         # git push https://${{ secrets.GH_TOKEN }}@github.com/2061360308/PalWorldModWarehouse.git
