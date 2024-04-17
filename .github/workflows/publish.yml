@@ -43,7 +43,7 @@ jobs:
         done
 
         # Remove the trailing comma
-        index_data=${index_data%?}+"]"
+        index_data=${index_data%?}"]"
 
         echo "index_data: $index_data"
 
