@@ -31,7 +31,7 @@ jobs:
 
           # Read config.json
           config_data=$(jq '{name, author, version, info, tag, sharer, modVersion, ue4}' "mods/$(basename "$zipfile" .zip)/config.json")
-          index_data+=("$config_data")
+          index_data+="$config_data,"
 
           # Get the name value from config.json
           name=$(jq -r '.name' "mods/$(basename "$zipfile" .zip)/config.json")
@@ -42,9 +42,14 @@ jobs:
 
         done
 
+        # Remove the trailing comma
+        index_data=${index_data%?}
+
+        echo "index_data: $index_data"
+
         # Create index.json
         timestamp=$(date +%s)
-        echo "{\"time\": $timestamp, \"data\": $index_data}" | jq . > index.json
+        echo "{\"time\": $timestamp, \"data\": [$index_data]}" | jq . > index.json
 
     - name: Commit and push changes
       run: |
