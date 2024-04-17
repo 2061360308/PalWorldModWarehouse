@@ -1,0 +1,51 @@
+name: Process Mods
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'mods/**'
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install unzip and jq
+      run: sudo apt-get install unzip jq -y
+
+    - name: Process mods and update index.json
+      run: |
+        mkdir -p info
+        index_data=[]
+        for zipfile in mods/*.zip; do
+          # Extract zip file
+          unzip -d "mods/$(basename "$zipfile" .zip)" "$zipfile"
+
+          # Read config.json
+          config_data=$(jq '{name, author, version, info, tag, sharer, modVersion, ue4}' "mods/$(basename "$zipfile" .zip)/config.json")
+          index_data+=("$config_data")
+
+          # Get the name value from config.json
+          name=$(jq -r '.name' "mods/$(basename "$zipfile" .zip)/config.json")
+
+          # Move readme.md to info/<zipfile name> directory
+          mkdir -p "info/$name"
+          mv "mods/$(basename "$zipfile" .zip)/readme.md" "info/$name"
+
+        done
+
+        # Create index.json
+        timestamp=$(date +%s)
+        echo "{\"time\": $timestamp, \"data\": $index_data}" | jq . > index.json
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add index.json info/*
+        git commit -m "Update index.json"
+        git push
