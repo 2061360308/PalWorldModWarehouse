@@ -48,4 +48,4 @@ jobs:
         git config --local user.name "GitHub Action"
         git add index.json info/*
         git commit -m "Update index.json"
-        git push
+        git push https://${{ secrets.GH_TOKEN }}@github.com/2061360308/PalWorldModWarehouse.git
