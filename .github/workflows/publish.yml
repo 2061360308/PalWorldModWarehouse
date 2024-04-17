@@ -44,9 +44,12 @@ jobs:
         echo "{\"time\": $timestamp, \"data\": $index_data}" | jq . > index.json
 
     - name: Commit and push changes
+      env:
+         ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add index.json info/*
         git commit -m "Update index.json"
-        git push https://${{ secrets.GH_TOKEN }}@github.com/2061360308/PalWorldModWarehouse.git
+        # git push https://${{ secrets.GH_TOKEN }}@github.com/2061360308/PalWorldModWarehouse.git
+        git push origin main
