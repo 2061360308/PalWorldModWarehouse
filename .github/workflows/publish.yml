@@ -24,7 +24,7 @@ jobs:
     - name: Process mods and update index.json
       run: |
         mkdir -p info
-        index_data=[]
+        index_data="["
         for zipfile in mods/*.zip; do
           # Extract zip file
           unzip -d "mods/$(basename "$zipfile" .zip)" "$zipfile"
@@ -43,13 +43,13 @@ jobs:
         done
 
         # Remove the trailing comma
-        index_data=${index_data%?}
+        index_data=${index_data%?}+"]"
 
         echo "index_data: $index_data"
 
         # Create index.json
         timestamp=$(date +%s)
-        echo "{\"time\": $timestamp, \"data\": [$index_data]}" | jq . > index.json
+        echo "{\"time\": $timestamp, \"data\": $index_data}" | jq . > index.json
 
     - name: Commit and push changes
       run: |
